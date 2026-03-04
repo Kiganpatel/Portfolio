@@ -17,7 +17,7 @@ nav { justify-content: space-around; align-items: center; height: 17vh; }
    ========================================= */
 .page-wrapper {
     min-height: 100vh;
-    background-color: #121212; /* Dark background default */
+    background-color: #121212; 
     color: #ffffff;
     transition: background-color 0.6s ease, color 0.6s ease;
 }
@@ -36,7 +36,7 @@ body.light-theme .nav-links a:hover { color: rgb(0, 0, 0); }
 body.light-theme .knob { box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
 
 /* =========================================
-   PULL CHAIN & PHYSICS STYLING
+   PULL CHAIN & STYLING
    ========================================= */
 .pull-chain {
     position: fixed;
@@ -47,15 +47,16 @@ body.light-theme .knob { box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
     align-items: center;
     cursor: grab;
     z-index: 1000;
-    transform-origin: top center;
-    touch-action: none; /* CRITICAL: Prevents screen scrolling when dragging */
+    /* CRITICAL: Locks the rotation point to the ceiling */
+    transform-origin: top center; 
+    touch-action: none; 
 }
 
 .pull-chain:active { cursor: grabbing; }
 
 .cord {
     width: 4px;
-    height: 150px; 
+    height: 120px; /* Default resting length */
     background-color: #666;
     background-image: radial-gradient(circle, #aaa 40%, transparent 50%);
     background-size: 4px 10px;
@@ -66,15 +67,12 @@ body.light-theme .knob { box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
     height: 35px;
     background: linear-gradient(to bottom, #d4af37, #aa8625);
     border-radius: 10px 10px 50% 50%;
-    /* Glows by default since it starts in dark mode */
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.6); 
     transition: box-shadow 0.6s ease;
 }
 
-/* The idle swing class (removed via JS after first touch) */
-.idle-swing {
-    animation: swing 4s infinite ease-in-out; 
-}
+/* The idle swing class (removed permanently via JS after first touch) */
+.idle-swing { animation: swing 4s infinite ease-in-out; }
 
 @keyframes swing {
     0%, 100% { transform: rotate(3deg); }

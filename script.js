@@ -1,62 +1,73 @@
 const chain = document.getElementById('pull-chain');
+const cord = document.querySelector('.cord');
+
 let isDragging = false;
+let hasToggled = false;
 
-// Variables to track coordinates
-let startY = 0, startX = 0;
-let currentY = 0, currentX = 0;
-let hasToggled = false; 
+// Physics Limits
+const RESTING_LENGTH = 120; // Normal cord size
+const MAX_STRETCH = 200;    // Absolute limit of how far you can pull it
+const TRIGGER_POINT = 180;  // How far down you pull before the lights switch
 
-// 1. Grab the chain
 chain.addEventListener('pointerdown', (e) => {
     isDragging = true;
+    hasToggled = false;
     
-    // Permanently remove the idle swinging animation on the first grab
+    // Permanently remove idle swing on first touch
     chain.classList.remove('idle-swing'); 
     
+    // Remove springy transitions so it tracks the mouse instantly
     chain.style.transition = 'none'; 
-    startY = e.clientY - currentY;
-    startX = e.clientX - currentX;
+    cord.style.transition = 'none'; 
     
     chain.setPointerCapture(e.pointerId);
-    hasToggled = false; 
 });
 
-// 2. Drag the chain
 chain.addEventListener('pointermove', (e) => {
     if (!isDragging) return;
     
-    currentY = e.clientY - startY;
-    currentX = e.clientX - startX;
+    // Get the exact anchor point at the ceiling (unaffected by rotation)
+    const anchorX = chain.offsetLeft + (chain.offsetWidth / 2);
+    const anchorY = chain.offsetTop;
     
-    if (currentY < 0) currentY = 0; // Prevent pushing into ceiling
+    // Calculate distance from ceiling to mouse
+    const dx = e.clientX - anchorX;
+    const dy = e.clientY - anchorY;
+    
+    // 1. ANGLE: Point the chain directly at the mouse
+    const angle = -Math.atan2(dx, dy) * (180 / Math.PI);
+    
+    // 2. STRETCH: Calculate physical distance, subtracting the knob height
+    let dist = Math.hypot(dx, dy);
+    let newCordHeight = dist - 35; 
+    
+    // Clamp the limits so it doesn't stretch infinitely or shrink
+    if (newCordHeight < RESTING_LENGTH) newCordHeight = RESTING_LENGTH;
+    if (newCordHeight > MAX_STRETCH) newCordHeight = MAX_STRETCH;
 
-    // Calculate side-to-side swing based on mouse movement
-    let angle = currentX / 5; 
+    // Apply the math to the chain
+    chain.style.transform = `rotate(${angle}deg)`;
+    cord.style.height = `${newCordHeight}px`;
 
-    // Apply movement
-    chain.style.transform = `translateY(${currentY}px) rotate(${angle}deg)`;
-
-    // TRIGGER THE LIGHT SWITCH
-    // If pulled down more than 80px, toggle to Light Mode
-    if (currentY > 80 && !hasToggled) {
+    // Trigger the Light Switch
+    if (newCordHeight >= TRIGGER_POINT && !hasToggled) {
         document.body.classList.toggle('light-theme');
-        hasToggled = true; // Lock it so it only toggles once per pull
-        
-        if (navigator.vibrate) navigator.vibrate(50); // Mobile vibration
+        hasToggled = true; 
+        if (navigator.vibrate) navigator.vibrate(50); // Small buzz on mobile
     }
 });
 
-// 3. Let go of the chain
 chain.addEventListener('pointerup', (e) => {
     if (!isDragging) return;
-    
     isDragging = false;
-    currentY = 0;
-    currentX = 0;
     
-    // Satisfying snap-back
+    // Add satisfying spring-back bounce
     chain.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    chain.style.transform = `translateY(0px) rotate(0deg)`;
+    cord.style.transition = 'height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    
+    // Snap back to resting state
+    chain.style.transform = `rotate(0deg)`;
+    cord.style.height = `${RESTING_LENGTH}px`;
     
     chain.releasePointerCapture(e.pointerId);
 });
