@@ -28,10 +28,25 @@ a, .btn {
 
 nav, .nav-links {
     display: flex;
+    font-size: 1.2rem;
 }
 
 nav {
     justify-content: space-around; /* flexbox's where to place spaces for all content */
     align-items: center;
     height: 17vh;
+}
+
+.nav-links {
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: rgb(85, 85, 85);
+}
+
+.nav-links a:hover {
+    color: rgb(0, 0, 0);
 }
