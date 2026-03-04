@@ -78,3 +78,189 @@ body.light-theme .knob { box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
     0%, 100% { transform: rotate(3deg); }
     50% { transform: rotate(-3deg); }
 }
+/* =========================================
+   CENTRAL LIGHT BULB & ILLUMINATION
+   ========================================= */
+
+/* The soft, ambient light cast across the background in Dark Mode */
+.room-illumination {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Creates a spotlight effect starting from top-center */
+    background: radial-gradient(circle at 50% 150px, rgba(255, 240, 100, 0.08) 0%, transparent 70%);
+    pointer-events: none; /* Allows you to click through it */
+    z-index: 1;
+    opacity: 1;
+    transition: opacity 0.8s ease;
+}
+
+/* Drops the whole fixture down into view */
+.ceiling-light-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    /* Centers it horizontally, 0px vertically */
+    transform: translateX(-50%) translateY(0); 
+    /* The cubic-bezier makes it "bouncy" when it falls into place */
+    transition: transform 0.8s cubic-bezier(0.5, 1.5, 0.4, 1); 
+    z-index: 998;
+    pointer-events: none;
+}
+
+/* Handles the continuous, gentle sway */
+.sway-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-origin: top center;
+    animation: light-sway 6s infinite ease-in-out;
+}
+
+/* The actual hardware */
+.wire {
+    width: 4px;
+    height: 10vh; /* Drops down 10% of the screen height */
+    background: #222;
+}
+
+.socket {
+    width: 24px;
+    height: 25px;
+    background: #555;
+    border-radius: 4px 4px 0 0;
+    background-image: linear-gradient(to right, #333, #666, #333);
+    z-index: 2;
+}
+
+.bulb {
+    width: 55px;
+    height: 75px;
+    margin-top: -8px; /* Tucks it up inside the socket slightly */
+    background: #fffce0;
+    border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+    /* Creates an intense, glowing halo */
+    box-shadow: 0 0 60px 30px rgba(255, 230, 0, 0.3), inset 0 0 20px #fff;
+    transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* The Keyframe Animation for swaying */
+@keyframes light-sway {
+    0%, 100% { transform: rotate(3deg); }
+    50% { transform: rotate(-3deg); }
+}
+
+/* =========================================
+   PULL CHAIN (RESPONSIVE)
+   ========================================= */
+.pull-chain {
+    position: fixed;
+    top: 0;
+    right: 5vw; /* Moved from 5% to 5vw for better scaling */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: grab;
+    z-index: 1000;
+    transform-origin: top center; 
+    touch-action: none; 
+}
+
+.pull-chain:active { cursor: grabbing; }
+
+.cord {
+    width: clamp(3px, 0.4vw, 6px); /* Scales the thickness */
+    height: 15vh; /* Initial responsive height, JS takes over */
+    background-color: #666;
+    background-image: radial-gradient(circle, #aaa 40%, transparent 50%);
+    background-size: 4px 10px;
+}
+
+.knob {
+    width: clamp(16px, 2vw, 24px);
+    height: clamp(28px, 3.5vw, 42px);
+    background: linear-gradient(to bottom, #d4af37, #aa8625);
+    border-radius: 10px 10px 50% 50%;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6); 
+    transition: box-shadow 0.6s ease;
+}
+
+/* =========================================
+   CENTRAL LIGHT BULB (RESPONSIVE & LOWERED)
+   ========================================= */
+.room-illumination {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Lowered the spotlight center to match the new bulb height */
+    background: radial-gradient(circle at 50% 30vh, rgba(255, 240, 100, 0.08) 0%, transparent 70%);
+    pointer-events: none; 
+    z-index: 1;
+    opacity: 1;
+    transition: opacity 0.8s ease;
+}
+
+.ceiling-light-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(0); 
+    transition: transform 0.8s cubic-bezier(0.5, 1.5, 0.4, 1); 
+    z-index: 998;
+    pointer-events: none;
+}
+
+.sway-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-origin: top center;
+    animation: light-sway 6s infinite ease-in-out;
+}
+
+/* Vintage Braided Bronze Wire */
+.wire {
+    width: clamp(3px, 0.4vw, 5px);
+    /* 22vh ensures it drops safely below your 17vh nav bar */
+    height: clamp(120px, 22vh, 300px); 
+    background: repeating-linear-gradient(45deg, #5c4e3c, #5c4e3c 3px, #4a3f2f 3px, #4a3f2f 6px);
+    box-shadow: inset 2px 0 3px rgba(0,0,0,0.4);
+}
+
+.socket {
+    width: clamp(20px, 2.5vw, 32px);
+    height: clamp(20px, 2.5vw, 30px);
+    background: linear-gradient(to right, #333, #666, #333);
+    border-radius: 4px 4px 0 0;
+    z-index: 2;
+}
+
+.bulb {
+    width: clamp(45px, 5.5vw, 80px);
+    height: clamp(65px, 7.5vw, 110px);
+    margin-top: clamp(-6px, -0.8vw, -10px); 
+    background: #fffce0;
+    border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+    box-shadow: 0 0 60px 30px rgba(255, 230, 0, 0.3), inset 0 0 20px #fff;
+    transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+
+@keyframes light-sway {
+    0%, 100% { transform: rotate(3deg); }
+    50% { transform: rotate(-3deg); }
+}
+
+body.light-theme .ceiling-light-container {
+    transform: translateX(-50%) translateY(-150%); /* Pulls it up into the ceiling */
+}
+body.light-theme .bulb {
+    background: #d4d4d4;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+body.light-theme .room-illumination {
+    opacity: 0;
+}
